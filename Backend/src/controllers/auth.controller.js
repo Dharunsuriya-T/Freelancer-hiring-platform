@@ -88,4 +88,29 @@ export const login = async (req, res) => {
 export const logout = (_,res)=> {
     res.cookie("jwt","",{maxAge:0})
     res.status(200).json({message:"Logged out successfully"})
-}
+};
+
+export const updateProfile = async (req, res) => {
+    const userId = req.user._id;
+
+    const { fullname, profilePic, specialization, portfolio } = req.body;
+
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                fullname,
+                profilePic,
+                specialization,
+                portfolio
+            },
+            { new: true }
+        );
+
+        res.status(200).json(updatedUser);
+
+    } catch (err) {
+        console.log("Profile update error:", err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
